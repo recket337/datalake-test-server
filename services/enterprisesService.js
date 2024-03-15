@@ -41,7 +41,7 @@ export const addUsers = async (userHashes, taxId, permissions) => {
         }
 
         for (const userHash of userHashes) {
-            await addUserToEnterprise(userHash, taxId, permissions);
+            await addUserToEnterprise(userHash, enterprise.enterprise_id, permissions);
         }
     } catch (error) {
         throw new Error(`Failed to add users to enterprise: ${error.message}`);
