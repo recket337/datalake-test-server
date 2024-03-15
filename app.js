@@ -1,5 +1,6 @@
 import express from 'express';
 import * as enterprisesService from './services/enterprisesService.js';
+import { validateStringParam } from './utils.js';
 
 const app = express();
 app.use(express.json());
@@ -11,7 +12,7 @@ app.post('/enterprise/users/add', async (req, res) => {
         if (!userHashes || !Array.isArray(userHashes) || userHashes.length === 0) {
             return res.status(400).json({ error: 'userHashes parameter is missing or invalid' });
         }
-        if (typeof taxId !== 'string' || !taxId.trim()) {
+        if (validateStringParam(taxId)) {
             return res.status(400).json({ error: 'taxId parameter is missing or invalid' });
         }
         if (!permissions || !Array.isArray(permissions) || permissions.length === 0) {
@@ -23,6 +24,22 @@ app.post('/enterprise/users/add', async (req, res) => {
         res.status(200).json({ message: 'Users added to enterprise successfully' });
     } catch (error) {
         console.error('Error adding users to enterprise:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/enterprise/users', async (req, res) => {
+    try {
+        const { taxId } = req.body;
+        if (validateStringParam(taxId)) {
+            return res.status(400).json({ error: 'taxId parameter is missing or invalid' });
+        }
+
+        const users = await enterprisesService.getEnterprisesUsers(taxId);
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error getting enterprise's users", error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

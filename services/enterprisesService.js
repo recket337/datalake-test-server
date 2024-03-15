@@ -47,3 +47,25 @@ export const addUsers = async (userHashes, taxId, permissions) => {
         throw new Error(`Failed to add users to enterprise: ${error.message}`);
     }
 };
+
+export const getEnterprisesUsers = async (taxId) => {
+    try {
+        const enterprise = await getEnterpriseByTaxId(taxId);
+        if (!enterprise) {
+            throw new Error('Enterprise not found');
+        }
+
+        const query = `
+            SELECT * FROM users
+            JOIN user_enterprise_rl uer ON users.user_id = uer.user_id
+            JOIN enterprises e ON uer.enterprise_id = e.enterprise_id
+            WHERE e.tax_id = $1
+        `;
+        const values = [taxId];
+        const result = await pool.query(query, values);
+        
+        return result.rows;
+    } catch (error) {
+        throw new Error(`Failed to get enterprise's users: ${error.message}`);
+    }
+}

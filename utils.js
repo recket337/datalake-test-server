@@ -1,0 +1,1 @@
+export const validateStringParam = arg => typeof arg !== 'string' || !arg.trim();
