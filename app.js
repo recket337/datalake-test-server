@@ -3,6 +3,16 @@ import * as enterprisesService from './services/enterprisesService.js';
 import { validateStringParam } from './utils.js';
 
 const app = express();
+
+// uncomment for local usage without cors error
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
+//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+//     next();
+// });
+
 app.use(express.json());
 
 app.post('/enterprise/users/add', async (req, res) => {
@@ -30,7 +40,8 @@ app.post('/enterprise/users/add', async (req, res) => {
 
 app.get('/enterprise/users', async (req, res) => {
     try {
-        const { taxId } = req.body;
+        console.log(req);
+        const { taxId } = req.query;
         if (validateStringParam(taxId)) {
             return res.status(400).json({ error: 'taxId parameter is missing or invalid' });
         }
