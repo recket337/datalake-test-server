@@ -40,7 +40,6 @@ app.post('/enterprise/users/add', async (req, res) => {
 
 app.get('/enterprise/users', async (req, res) => {
     try {
-        console.log(req);
         const { taxId } = req.query;
         if (validateStringParam(taxId)) {
             return res.status(400).json({ error: 'taxId parameter is missing or invalid' });
